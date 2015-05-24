@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  	<meta property="og:title" content=" Faster python builds in Travis with container based infra &middot;  Often Bearing Metaphoric Tense" />
+  	<meta property="og:site_name" content="Often Bearing Metaphoric Tense" />
+  	<meta property="og:url" content="http://localhost:1313/Tech/travis-builds/" />
+    
+    
+  	<meta property="og:type" content="article" />
+
+    <meta property="og:article:published_time" content="2015-02-01T00:00:00Z" />
+
+    
+    <meta property="og:article:tag" content="Python" />
+    
+    <meta property="og:article:tag" content="Travis" />
+    
+    <meta property="og:article:tag" content="ci" />
+    
+    
+
+  <title>
+     Faster python builds in Travis with container based infra &middot;  Often Bearing Metaphoric Tense
+  </title>
+
+    <meta name="description" content="code,coffee &amp; stuff" />
+
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="shortcut icon" href="http://localhost:1313/images/favicon.ico">
+	  <link rel="apple-touch-icon" href="http://localhost:1313/images/apple-touch-icon.png" />
+    
+    <link rel="stylesheet" type="text/css" href="http://localhost:1313/css/screen.css" />
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic|Open+Sans:700,400" />
+
+
+    
+      
+          <link href="http://localhost:1313/index.xml" rel="alternate" type="application/rss+xml" title="Often Bearing Metaphoric Tense" />
+      
+      
+    
+    <meta name="generator" content="Hugo 0.13" />
+
+    <link rel="canonical" href="http://localhost:1313/Tech/travis-builds/" />
+
+    
+</head>
+<body class="nav-closed">
+
+  <div class="nav">
+    <h3 class="nav-title">Menu</h3>
+    <a href="#" class="nav-close">
+        <span class="hidden">Close</span>
+    </a>
+    <ul>
+        
+            <li class="nav-opened " role="presentation">
+            	<a href="/">Blog</a>
+            </li>
+        
+    </ul>
+    
+    
+    <a class="subscribe-button icon-feed" href="http://localhost:1313/index.xml">Subscribe</a>
+    
+</div>
+<span class="nav-cover"></span>
+
+
+ <div class="site-wrapper">
+
+
+
+<header class="main-header post-head no-cover">
+  <nav class="main-nav clearfix">
+
+
+  
+  
+      <a class="menu-button" href="#"><span class="burger">&#9776;</span><span class="word">Menu</span></a>
+  
+  </nav>
+</header>
+
+
+
+<main class="content" role="main">
+
+
+
+
+  <article class="post">
+
+    <header class="post-header">
+        <h1 class="post-title">Faster python builds in Travis with container based infra</h1>
+        <section class="post-meta">
+          <time class="post-date" datetime="2015-02-01T00:00:00Z">
+            Feb 1, 2015
+          </time>
+
+         
+          <span class="post-tag small"><a href="http://localhost:1313/tags/python/">#Python</a></span>
+         
+          <span class="post-tag small"><a href="http://localhost:1313/tags/travis/">#Travis</a></span>
+         
+          <span class="post-tag small"><a href="http://localhost:1313/tags/ci/">#ci</a></span>
+         
+        </section>
+    </header>
+  
+    <section class="post-content">
+      <p>Lately, travis CI has started supporting builds using <a href="http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/">container</a>
+based infrastructure which run much faster due to more available
+resources and good use of caching. This is currently possible only for
+projects that don&rsquo;t use <code>sudo</code> atm . For more details read <a href="http://docs.travis-ci.com/user/workers/container-based-infrastructure/">this</a>
+post. Of late, I have been submitting Pull Requests to various
+projects to use this feature wherever possible. This post is primarily
+oriented towards Python projects.</p>
+
+<p>For many python projects, a significant amount of time is spent in
+installing &amp; building the dependencies. So caching these should save
+you a good amount of time. Pip downloads can be cached specifying a
+cache directory, which will avoid hitting the pypi mirror for every
+line in your requirements. The below examples assume that your testing
+script is something like <code>make travis</code></p>
+
+<pre><code>:::yaml
+sudo : false
+cache:
+  directories: 
+    - $HOME/.pip-cache
+script:
+  - pip install -r requirements.txt --download-cache $HOME/.pip-cache   
+  - make travis
+</code></pre>
+
+<p>The above lines will make sure that for subsequent runs pip packages
+from the cache are used. However the packages will still need to be be
+built, which means if you&rsquo;re using packages using C (lxml for eg), a
+lot of time will be still spent for building the package itself. One
+way of working around this would be the use of Python Wheels and
+caching them as this avoids the need for subsequent builds. We could
+download the wheels to a specified directory and cache that, so that
+we can cut down on the build time.  So we would have something like:</p>
+
+<pre><code>:::yaml
+sudo : false
+cache:
+  directories: 
+    - $PWD/wheelhouse
+script:
+  - pip wheel -r requirements.txt
+  - pip install -r requirements.txt
+  - make travis
+</code></pre>
+
+<p>And voila! We have faster travis builds.</p>
+
+<p>PS If you have better ways to speedup, I&rsquo;ll be happy to hear, please
+let me know in comments or hit me up on <a href="https://twitter.com/abhishekl">twitter</a>.</p>
+
+    </section>
+
+
+  <footer class="post-footer">
+
+
+    
+
+
+    <section class="author">
+        <h4><a href="http://localhost:1313/"></a></h4>
+        
+            <p>Read <a href="http://localhost:1313/">more posts</a> by this author.</p>
+        
+        <div class="author-meta">
+            
+            
+        </div>
+    </section>
+
+
+    
+    <section class="share">
+      <h4>Share this post</h4>
+      <a class="icon-twitter" style="font-size: 1.4em" href="https://twitter.com/share?text=Faster%20python%20builds%20in%20Travis%20with%20container%20based%20infra&amp;url=http%3a%2f%2flocalhost%3a1313%2fTech%2ftravis-builds%2f"
+          onclick="window.open(this.href, 'twitter-share', 'width=550,height=235');return false;">
+          <span class="hidden">Twitter</span>
+      </a>
+      <a class="icon-facebook" style="font-size: 1.4em" href="https://www.facebook.com/sharer/sharer.php?u=http%3a%2f%2flocalhost%3a1313%2fTech%2ftravis-builds%2f"
+          onclick="window.open(this.href, 'facebook-share','width=580,height=296');return false;">
+          <span class="hidden">Facebook</span>
+      </a>
+      <a class="icon-google-plus" style="font-size: 1.4em" href="https://plus.google.com/share?url=http%3a%2f%2flocalhost%3a1313%2fTech%2ftravis-builds%2f"
+         onclick="window.open(this.href, 'google-plus-share', 'width=490,height=530');return false;">
+          <span class="hidden">Google+</span>
+      </a>
+    </section>
+
+    
+    
+    <div id="disqus_thread"></div>
+    <script type="text/javascript">
+      var disqus_shortname = 'hyperbolicmonologues';
+      (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+      })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    
+    
+
+  </footer>
+</article>
+
+</main>
+    <footer class="site-footer clearfix">
+        <section class="copyright"><a href="">Often Bearing Metaphoric Tense</a> All rights reserved 2012-15</section>
+        
+        <section class="poweredby">Proudly generated by <a class="icon-hugo" href="http://gohugo.io">HUGO</a>, with <a class="icon-theme" href="https://github.com/vjeantet/hugo-theme-casper">Casper</a> theme</section>
+        
+    </footer>
+    </div>
+    <script type="text/javascript" src="http://localhost:1313/js/jquery.js"></script>
+    <script type="text/javascript" src="http://localhost:1313/js/jquery.fitvids.js"></script>
+    <script type="text/javascript" src="http://localhost:1313/js/index.js"></script>
+
+<script>document.write('<script src="http://'
+        + (location.host || 'localhost').split(':')[0]
+		+ ':1313/livereload.js?mindelay=10"></'
+        + 'script>')</script></body>
+</html>
+

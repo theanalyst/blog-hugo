@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Registrator on Often Bearing Metaphoric Tense</title>
+    <link>http://localhost:1313/tags/registrator/</link>
+    <description>Recent content in Registrator on Often Bearing Metaphoric Tense</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>All rights reserved 2012-15</copyright>
+    <lastBuildDate>Sat, 14 Feb 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/registrator/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Consul: Getting started with service discovery</title>
+      <link>http://localhost:1313/Tech/consul-1/</link>
+      <pubDate>Sat, 14 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/Tech/consul-1/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://consul.io&#34;&gt;Consul&lt;/a&gt; is a great tool for service discovery. It is distributed
+and highly available (CA if you&amp;rsquo;re into the CAP sort of thing). It
+provides a DNS interface and a highly available Key Value store. This
+post is very much an introductory level post, baby steps for service
+discovery using consul. We will be using docker to quickly take consul
+out for a test drive.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

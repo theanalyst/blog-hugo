@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Hy on Often Bearing Metaphoric Tense</title>
+    <link>http://localhost:1313/tags/hy/</link>
+    <description>Recent content in Hy on Often Bearing Metaphoric Tense</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>All rights reserved 2012-15</copyright>
+    <lastBuildDate>Sun, 21 Dec 2014 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/hy/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>2014: the year in books, using Goodreads, pandas &amp; Hy</title>
+      <link>http://localhost:1313/Tech/goodreads/</link>
+      <pubDate>Sun, 21 Dec 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/Tech/goodreads/</guid>
+      <description>&lt;p&gt;&lt;code&gt;Note: The content has been updated to reflect the new kwargs style
+in Hy, as such the snippets only work with the current Hy master&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;As 2014 is coming to a close, I thought it would be a nice time to
+review the year as far as reading was concerned. Since I track the
+books I read using Goodreads, I felt it would be an interesting
+experiment to see some numbers from Goodreads. Though Goodreads
+provides an api, it doesn&amp;rsquo;t seem to be directly useful to get some
+numbers from a user account (I could be wrong here). Fortunately, an
+export to csv option is provieded in the account which helps in our
+favor.&lt;/p&gt;
+
+&lt;p&gt;For any kind of data analysis in python, &lt;a href=&#34;http://pandas.pydata.org&#34;&gt;pandas&lt;/a&gt; is a brilliant
+library. Also it does most of the heavy lifting as far as processing
+csv files are concerned. Since &lt;a href=&#34;http://hylang.org&#34;&gt;Hy&lt;/a&gt; works wherever python works, I
+thought it would be an interesting experiment to use Hy to parse the
+data.&lt;/p&gt;
+
+&lt;p&gt;To start with reading csv is a simple call to pandas&amp;rsquo; &lt;code&gt;read_csv&lt;/code&gt;
+function. This can be done with only the interesting fields.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;:::hylang
+(import pandas
+    [numpy :as np]
+    [matplotlib.pyplot :as plt]
+    [seaborn :as sns])
+
+(defn parse-goodreads-csv [filepath]
+  (let [[required-fields [&amp;quot;Title&amp;quot; &amp;quot;Date Read&amp;quot; &amp;quot;Bookshelves&amp;quot;
+                          &amp;quot;Number of Pages&amp;quot; &amp;quot;Original Publication Year&amp;quot;]]
+    (pandas.read_csv filepath :usecols required-fields
+                     :index-col &amp;quot;Date Read&amp;quot; :parse-dates true)))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now taking out only the column&amp;rsquo;s we&amp;rsquo;re interested in &amp;amp; filtering out
+the data from only a particular year can be done by&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;:::hylang
+(defn books-in-year [dataframe year]
+  (let [[day1 (fn [y] (+ (str y) &amp;quot;-01-01&amp;quot;))]]
+    (slice (. dataframe ix) (day1 year) (day1 (inc year)))))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;ix&lt;/code&gt; returns the index of dataframe, since we&amp;rsquo;ll be indexing by date
+read, this allows us to select the required range, by simply selecting
+a date range from the beginning of the year to the next year.&lt;/p&gt;
+
+&lt;p&gt;Since it would be interesting to see the count of books as well as the
+pages on a monthly basis, we should filter the data on a monthly
+basis. Pandas offers a &lt;a href=&#34;http://pandas.pydata.org/pandas-docs/stable/groupby.html&#34;&gt;&lt;code&gt;groupby&lt;/code&gt;&lt;/a&gt; &amp;amp; &lt;code&gt;aggregate&lt;/code&gt; much similiar to
+SQL like queries. So all we have to do is to group pages by month
+here.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;:::hylang
+(defn aggregate-by-month [dataframe params]
+  &amp;quot;Group a particular key by month&amp;quot;
+  (-&amp;gt; (.groupby dataframe (. dataframe index month))
+      (.aggregate params)))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The above function assumes that the dataframe object is already
+indexed by a timeframe data, (Date Read in our case), then a simple
+groupby month is performed and supplied to &lt;code&gt;aggregate&lt;/code&gt; which does a
+cumulative operation on the grouped data according the supplied
+functions. The threading operator &lt;code&gt;-&amp;gt;&lt;/code&gt; makes the result of the first
+call as the first argument of the function. Now we have enough to get
+some stats for the year.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;:::hylang
+(defn process [filepath]
+  (let [[books-in-2014
+          (-&amp;gt; (parse-goodreads-csv filepath)
+              (books-in-year 2014))]
+        [pages-per-month (-&amp;gt; (. books-in-2014 [[&amp;quot;Number of Pages&amp;quot;]])
+                         (aggregate-by-month [&amp;quot;sum&amp;quot; &amp;quot;count&amp;quot; np.mean]))]]
+  (print &amp;quot;Pages read in 2014 &amp;quot;
+         ((. books-in-2014 [&amp;quot;Number of Pages&amp;quot;] sum)))
+  (print &amp;quot;Pages read in kindle&amp;quot;
+         ((. books-in-2014 [(= books-in-2014.Bookshelves &amp;quot;kindle&amp;quot;)]
+             [&amp;quot;Number of Pages&amp;quot;] sum)))
+  (print &amp;quot;Monthly Stats&amp;quot;)
+  (print pages-per-month)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;First, the &lt;code&gt;parse-csv&lt;/code&gt; function is given only the interesting columns,
+also indexing is done via date read, we get &lt;code&gt;pages-per-month&lt;/code&gt; via the
+aggregate &amp;amp; groupby function shown earlier. Counting the pages read in
+Kindle was done by summing columns containing the Book shelves
+(alternatively if you had marked the editions correctly another field
+suggest the Kindle edition..).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;:::txt
+Pages read in 2014  6659.0
+Pages read in kindle 4489.0
+Monthly Stats
+Number of Pages
+            sum  count        mean
+ 1              1061      3  353.666667
+ 2               136      2   68.000000
+ 6               373      1  373.000000
+ 8               484      2  242.000000
+ 9              1445      8  180.625000
+ 10             2126     17  125.058824
+ 11              262      1  262.000000
+ 12              772      6  128.666667
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Finally this is the plot of pages&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://localhost:1313/images/pages-per-month.png&#34; alt=&#34;pages_per_month&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Overall 2014 was a good year as far as reading was concerned, read a
+lot of classics which had been on my backlog for quite sometime. Also
+read &lt;em&gt;The Guide&lt;/em&gt;, which was pending for quite some time. Next year I
+should follow a more consistent schedule :), there were months with no
+reading at all and a few with too much (the peak in october was
+probably due to the combined holidays here, at that time) The raw data
+and output (as well as the program) are available in my &lt;a href=&#34;http://github.com/theanalyst/cuddlebear&#34;&gt;github&lt;/a&gt;
+repo.&lt;/p&gt;
+
+&lt;p&gt;PS For those of you interested in knowing what I&amp;rsquo;ve been reading
+checkout &lt;a href=&#34;https://www.goodreads.com/review/list/14029645-abhishek?read_at=2014&amp;amp;view=covers&#34;&gt;my goodreads 2014 list&lt;/a&gt;. Do suggest anything worth
+reading in the comments. Cya!&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Travis on Often Bearing Metaphoric Tense</title>
+    <link>http://localhost:1313/tags/travis/</link>
+    <description>Recent content in Travis on Often Bearing Metaphoric Tense</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>All rights reserved 2012-15</copyright>
+    <lastBuildDate>Sun, 01 Feb 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/travis/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Faster python builds in Travis with container based infra</title>
+      <link>http://localhost:1313/Tech/travis-builds/</link>
+      <pubDate>Sun, 01 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/Tech/travis-builds/</guid>
+      <description>&lt;p&gt;Lately, travis CI has started supporting builds using &lt;a href=&#34;http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/&#34;&gt;container&lt;/a&gt;
+based infrastructure which run much faster due to more available
+resources and good use of caching. This is currently possible only for
+projects that don&amp;rsquo;t use &lt;code&gt;sudo&lt;/code&gt; atm . For more details read &lt;a href=&#34;http://docs.travis-ci.com/user/workers/container-based-infrastructure/&#34;&gt;this&lt;/a&gt;
+post. Of late, I have been submitting Pull Requests to various
+projects to use this feature wherever possible. This post is primarily
+oriented towards Python projects.&lt;/p&gt;
+
+&lt;p&gt;For many python projects, a significant amount of time is spent in
+installing &amp;amp; building the dependencies. So caching these should save
+you a good amount of time. Pip downloads can be cached specifying a
+cache directory, which will avoid hitting the pypi mirror for every
+line in your requirements. The below examples assume that your testing
+script is something like &lt;code&gt;make travis&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;:::yaml
+sudo : false
+cache:
+  directories: 
+    - $HOME/.pip-cache
+script:
+  - pip install -r requirements.txt --download-cache $HOME/.pip-cache   
+  - make travis
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The above lines will make sure that for subsequent runs pip packages
+from the cache are used. However the packages will still need to be be
+built, which means if you&amp;rsquo;re using packages using C (lxml for eg), a
+lot of time will be still spent for building the package itself. One
+way of working around this would be the use of Python Wheels and
+caching them as this avoids the need for subsequent builds. We could
+download the wheels to a specified directory and cache that, so that
+we can cut down on the build time.  So we would have something like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;:::yaml
+sudo : false
+cache:
+  directories: 
+    - $PWD/wheelhouse
+script:
+  - pip wheel -r requirements.txt
+  - pip install -r requirements.txt
+  - make travis
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And voila! We have faster travis builds.&lt;/p&gt;
+
+&lt;p&gt;PS If you have better ways to speedup, I&amp;rsquo;ll be happy to hear, please
+let me know in comments or hit me up on &lt;a href=&#34;https://twitter.com/abhishekl&#34;&gt;twitter&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

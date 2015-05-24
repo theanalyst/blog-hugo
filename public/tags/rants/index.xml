@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Rants on Often Bearing Metaphoric Tense</title>
+    <link>http://localhost:1313/tags/rants/</link>
+    <description>Recent content in Rants on Often Bearing Metaphoric Tense</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>All rights reserved 2012-15</copyright>
+    <lastBuildDate>Mon, 01 Apr 2013 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tags/rants/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>I&#39;m Back (the hyperbole version)</title>
+      <link>http://localhost:1313/Rants/onwriting/</link>
+      <pubDate>Mon, 01 Apr 2013 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/Rants/onwriting/</guid>
+      <description>&lt;p&gt;This is the quintessential “I&amp;rsquo;m back” post in blogosphere, which is
+often marked by a blogger coming up with &lt;em&gt;imaginative&lt;/em&gt; reasons
+to explain a questionable absence from the virtual world.
+Tempting explanations for, not writing for so long, include
+work pressure, often marked by people blaming work for
+(not) following their interests, a generic term, which, writers &amp;amp; artists
+lovingly call the writer’s block, to describe their shortage of
+creativity. Of course, if you know me, you know the actual reason is
+just a cover up for not mentioning my often recurring theme of
+procrastination. This time though twitcrastination&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:af53238752c4d287802873f392bbd7d4:twit&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:af53238752c4d287802873f392bbd7d4:twit&#34;&gt;1&lt;/a&gt;&lt;/sup&gt; is to blame
+for most of it.&lt;/p&gt;
+
+&lt;p&gt;Of late, I have found a new obsession for (micro) blogging in form of
+twitter, a service, which apparently,&lt;s&gt; lets you post links to
+instagram dinner pics&lt;/s&gt;, helps people to connect to people and
+organisations they care about. However, what happens in reality is
+explained in part by the graph below.(A certain Gauss must be
+twisting &amp;amp; turning in his grave here, for the blatant abuse of normal
+distributions that is about to follow &lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:af53238752c4d287802873f392bbd7d4:xkcd&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:af53238752c4d287802873f392bbd7d4:xkcd&#34;&gt;2&lt;/a&gt;&lt;/sup&gt;):&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://localhost:1313/images/productivity.png&#34; alt=&#34;xkcd_productivity&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Seeing the world&amp;rsquo;s desire to shorten its verbosity, and the disturbing
+increase in TL;DR statuses, I am thinking of killling my blog to
+embrace the merry little challenges of microblogging.
+Why should anything stand the test of time and be etched in stone?
+Its 2013, ephemeral (like twitter statuses) is the way to go for your thoughts and actions&lt;/p&gt;
+
+&lt;p&gt;twitterati obsessively uses to explain their apparent lack of productivity
+stats, XKCDify any matplotlib graph; details &lt;a href=&#34;http://jakevdp.github.com/blog/2012/10/07/xkcd-style-plots-in-matplotlib&#34;&gt;here&lt;/a&gt; and source &lt;a href=&#34;https://gist.github.com/theanalyst/5284221&#34;&gt;here&lt;/a&gt;&lt;/p&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+
+&lt;hr /&gt;
+
+&lt;ol&gt;
+&lt;li id=&#34;fn:af53238752c4d287802873f392bbd7d4:twit&#34;&gt;Procrastination enabled by use of twitter, a term which the
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:af53238752c4d287802873f392bbd7d4:twit&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&#34;fn:af53238752c4d287802873f392bbd7d4:xkcd&#34;&gt;XKCD plots,  the cornerstone of any descriptive
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:af53238752c4d287802873f392bbd7d4:xkcd&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Hello World</title>
+      <link>http://localhost:1313/Rants/HelloWorld/</link>
+      <pubDate>Fri, 08 Jun 2012 18:30:21 +0530</pubDate>
+      
+      <guid>http://localhost:1313/Rants/HelloWorld/</guid>
+      <description>&lt;p&gt;If you&amp;rsquo;re reading this, it means that I have successfully started
+blogging again. As the more perceptive of you might have
+realized, this blog isn&amp;rsquo;t hosted at &lt;em&gt;blogger&lt;/em&gt; anymore well this new
+avatar is powered by &lt;a href=&#34;pelican.notmyidea.org&#34;&gt;pelican&lt;/a&gt;, an awesome
+static blogging engine written in python and served by github pages,
+(of course the second part should be intuitionally obvious, given the
+url atm).&lt;/p&gt;
+
+&lt;p&gt;While the sabbatical from &lt;em&gt;blogosphere&lt;/em&gt; has been long, it was more
+because of lack of anything to post rather than too busy to post
+anything, and now I&amp;rsquo;m back from a questionably long self-imposed
+exile. And life has been relatively smooth in the interlude,(though my
+last post was from college, which I dearly miss now) and I&amp;rsquo;m a
+graduand now with a job going along just fine and learning new things
+in the process.&lt;/p&gt;
+
+&lt;p&gt;While I&amp;rsquo;m still in the process of importing previous posts and
+comments from blogger (read I am yet to decide whether the pain is
+worth it or not), you should have fun reading the blog with its
+current content which should be narcissistic links to me-pages. You
+should be seeing proper posts being pushed into this url soon.&lt;/p&gt;
+
+&lt;p&gt;If you have read upto this point, I would urge you to take the leap of
+faith, and follow my alter-egos in the parallel universes of
+&lt;em&gt;twitterati&lt;/em&gt; and &lt;em&gt;blogosphere&lt;/em&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

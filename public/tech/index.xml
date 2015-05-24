@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Teches on Often Bearing Metaphoric Tense</title>
+    <link>http://localhost:1313/tech/</link>
+    <description>Recent content in Teches on Often Bearing Metaphoric Tense</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>All rights reserved 2012-15</copyright>
+    <lastBuildDate>Sat, 14 Feb 2015 00:00:00 +0000</lastBuildDate>
+    <atom:link href="http://localhost:1313/tech/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Consul: Getting started with service discovery</title>
+      <link>http://localhost:1313/Tech/consul-1/</link>
+      <pubDate>Sat, 14 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/Tech/consul-1/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;https://consul.io&#34;&gt;Consul&lt;/a&gt; is a great tool for service discovery. It is distributed
+and highly available (CA if you&amp;rsquo;re into the CAP sort of thing). It
+provides a DNS interface and a highly available Key Value store. This
+post is very much an introductory level post, baby steps for service
+discovery using consul. We will be using docker to quickly take consul
+out for a test drive.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Faster python builds in Travis with container based infra</title>
+      <link>http://localhost:1313/Tech/travis-builds/</link>
+      <pubDate>Sun, 01 Feb 2015 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/Tech/travis-builds/</guid>
+      <description>&lt;p&gt;Lately, travis CI has started supporting builds using &lt;a href=&#34;http://blog.travis-ci.com/2014-12-17-faster-builds-with-container-based-infrastructure/&#34;&gt;container&lt;/a&gt;
+based infrastructure which run much faster due to more available
+resources and good use of caching. This is currently possible only for
+projects that don&amp;rsquo;t use &lt;code&gt;sudo&lt;/code&gt; atm . For more details read &lt;a href=&#34;http://docs.travis-ci.com/user/workers/container-based-infrastructure/&#34;&gt;this&lt;/a&gt;
+post. Of late, I have been submitting Pull Requests to various
+projects to use this feature wherever possible. This post is primarily
+oriented towards Python projects.&lt;/p&gt;
+
+&lt;p&gt;For many python projects, a significant amount of time is spent in
+installing &amp;amp; building the dependencies. So caching these should save
+you a good amount of time. Pip downloads can be cached specifying a
+cache directory, which will avoid hitting the pypi mirror for every
+line in your requirements. The below examples assume that your testing
+script is something like &lt;code&gt;make travis&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;:::yaml
+sudo : false
+cache:
+  directories: 
+    - $HOME/.pip-cache
+script:
+  - pip install -r requirements.txt --download-cache $HOME/.pip-cache   
+  - make travis
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The above lines will make sure that for subsequent runs pip packages
+from the cache are used. However the packages will still need to be be
+built, which means if you&amp;rsquo;re using packages using C (lxml for eg), a
+lot of time will be still spent for building the package itself. One
+way of working around this would be the use of Python Wheels and
+caching them as this avoids the need for subsequent builds. We could
+download the wheels to a specified directory and cache that, so that
+we can cut down on the build time.  So we would have something like:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;:::yaml
+sudo : false
+cache:
+  directories: 
+    - $PWD/wheelhouse
+script:
+  - pip wheel -r requirements.txt
+  - pip install -r requirements.txt
+  - make travis
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;And voila! We have faster travis builds.&lt;/p&gt;
+
+&lt;p&gt;PS If you have better ways to speedup, I&amp;rsquo;ll be happy to hear, please
+let me know in comments or hit me up on &lt;a href=&#34;https://twitter.com/abhishekl&#34;&gt;twitter&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>2014: the year in books, using Goodreads, pandas &amp; Hy</title>
+      <link>http://localhost:1313/Tech/goodreads/</link>
+      <pubDate>Sun, 21 Dec 2014 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/Tech/goodreads/</guid>
+      <description>&lt;p&gt;&lt;code&gt;Note: The content has been updated to reflect the new kwargs style
+in Hy, as such the snippets only work with the current Hy master&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;As 2014 is coming to a close, I thought it would be a nice time to
+review the year as far as reading was concerned. Since I track the
+books I read using Goodreads, I felt it would be an interesting
+experiment to see some numbers from Goodreads. Though Goodreads
+provides an api, it doesn&amp;rsquo;t seem to be directly useful to get some
+numbers from a user account (I could be wrong here). Fortunately, an
+export to csv option is provieded in the account which helps in our
+favor.&lt;/p&gt;
+
+&lt;p&gt;For any kind of data analysis in python, &lt;a href=&#34;http://pandas.pydata.org&#34;&gt;pandas&lt;/a&gt; is a brilliant
+library. Also it does most of the heavy lifting as far as processing
+csv files are concerned. Since &lt;a href=&#34;http://hylang.org&#34;&gt;Hy&lt;/a&gt; works wherever python works, I
+thought it would be an interesting experiment to use Hy to parse the
+data.&lt;/p&gt;
+
+&lt;p&gt;To start with reading csv is a simple call to pandas&amp;rsquo; &lt;code&gt;read_csv&lt;/code&gt;
+function. This can be done with only the interesting fields.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;:::hylang
+(import pandas
+    [numpy :as np]
+    [matplotlib.pyplot :as plt]
+    [seaborn :as sns])
+
+(defn parse-goodreads-csv [filepath]
+  (let [[required-fields [&amp;quot;Title&amp;quot; &amp;quot;Date Read&amp;quot; &amp;quot;Bookshelves&amp;quot;
+                          &amp;quot;Number of Pages&amp;quot; &amp;quot;Original Publication Year&amp;quot;]]
+    (pandas.read_csv filepath :usecols required-fields
+                     :index-col &amp;quot;Date Read&amp;quot; :parse-dates true)))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Now taking out only the column&amp;rsquo;s we&amp;rsquo;re interested in &amp;amp; filtering out
+the data from only a particular year can be done by&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;:::hylang
+(defn books-in-year [dataframe year]
+  (let [[day1 (fn [y] (+ (str y) &amp;quot;-01-01&amp;quot;))]]
+    (slice (. dataframe ix) (day1 year) (day1 (inc year)))))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;ix&lt;/code&gt; returns the index of dataframe, since we&amp;rsquo;ll be indexing by date
+read, this allows us to select the required range, by simply selecting
+a date range from the beginning of the year to the next year.&lt;/p&gt;
+
+&lt;p&gt;Since it would be interesting to see the count of books as well as the
+pages on a monthly basis, we should filter the data on a monthly
+basis. Pandas offers a &lt;a href=&#34;http://pandas.pydata.org/pandas-docs/stable/groupby.html&#34;&gt;&lt;code&gt;groupby&lt;/code&gt;&lt;/a&gt; &amp;amp; &lt;code&gt;aggregate&lt;/code&gt; much similiar to
+SQL like queries. So all we have to do is to group pages by month
+here.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;:::hylang
+(defn aggregate-by-month [dataframe params]
+  &amp;quot;Group a particular key by month&amp;quot;
+  (-&amp;gt; (.groupby dataframe (. dataframe index month))
+      (.aggregate params)))
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The above function assumes that the dataframe object is already
+indexed by a timeframe data, (Date Read in our case), then a simple
+groupby month is performed and supplied to &lt;code&gt;aggregate&lt;/code&gt; which does a
+cumulative operation on the grouped data according the supplied
+functions. The threading operator &lt;code&gt;-&amp;gt;&lt;/code&gt; makes the result of the first
+call as the first argument of the function. Now we have enough to get
+some stats for the year.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;:::hylang
+(defn process [filepath]
+  (let [[books-in-2014
+          (-&amp;gt; (parse-goodreads-csv filepath)
+              (books-in-year 2014))]
+        [pages-per-month (-&amp;gt; (. books-in-2014 [[&amp;quot;Number of Pages&amp;quot;]])
+                         (aggregate-by-month [&amp;quot;sum&amp;quot; &amp;quot;count&amp;quot; np.mean]))]]
+  (print &amp;quot;Pages read in 2014 &amp;quot;
+         ((. books-in-2014 [&amp;quot;Number of Pages&amp;quot;] sum)))
+  (print &amp;quot;Pages read in kindle&amp;quot;
+         ((. books-in-2014 [(= books-in-2014.Bookshelves &amp;quot;kindle&amp;quot;)]
+             [&amp;quot;Number of Pages&amp;quot;] sum)))
+  (print &amp;quot;Monthly Stats&amp;quot;)
+  (print pages-per-month)
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;First, the &lt;code&gt;parse-csv&lt;/code&gt; function is given only the interesting columns,
+also indexing is done via date read, we get &lt;code&gt;pages-per-month&lt;/code&gt; via the
+aggregate &amp;amp; groupby function shown earlier. Counting the pages read in
+Kindle was done by summing columns containing the Book shelves
+(alternatively if you had marked the editions correctly another field
+suggest the Kindle edition..).&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;:::txt
+Pages read in 2014  6659.0
+Pages read in kindle 4489.0
+Monthly Stats
+Number of Pages
+            sum  count        mean
+ 1              1061      3  353.666667
+ 2               136      2   68.000000
+ 6               373      1  373.000000
+ 8               484      2  242.000000
+ 9              1445      8  180.625000
+ 10             2126     17  125.058824
+ 11              262      1  262.000000
+ 12              772      6  128.666667
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Finally this is the plot of pages&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&#34;http://localhost:1313/images/pages-per-month.png&#34; alt=&#34;pages_per_month&#34; /&gt;
+&lt;/p&gt;
+
+&lt;p&gt;Overall 2014 was a good year as far as reading was concerned, read a
+lot of classics which had been on my backlog for quite sometime. Also
+read &lt;em&gt;The Guide&lt;/em&gt;, which was pending for quite some time. Next year I
+should follow a more consistent schedule :), there were months with no
+reading at all and a few with too much (the peak in october was
+probably due to the combined holidays here, at that time) The raw data
+and output (as well as the program) are available in my &lt;a href=&#34;http://github.com/theanalyst/cuddlebear&#34;&gt;github&lt;/a&gt;
+repo.&lt;/p&gt;
+
+&lt;p&gt;PS For those of you interested in knowing what I&amp;rsquo;ve been reading
+checkout &lt;a href=&#34;https://www.goodreads.com/review/list/14029645-abhishek?read_at=2014&amp;amp;view=covers&#34;&gt;my goodreads 2014 list&lt;/a&gt;. Do suggest anything worth
+reading in the comments. Cya!&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>The Silent Observer&#39;s Metamorphosis</title>
+      <link>http://localhost:1313/Tech/learn/</link>
+      <pubDate>Sat, 22 Dec 2012 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/Tech/learn/</guid>
+      <description>
+
+&lt;p&gt;My friend, Jinto, wrote a blog-post titled
+&lt;em&gt;&lt;a href=&#34;http://untold-opinion.blogspot.in/2012/12/transitioning-from-learners-to-observers.html&#34;&gt;Transitioning from learners to observers&lt;/a&gt;&lt;/em&gt;, which talks about the
+increasing transition from a learner to being a casual observer of
+things in this digital era. The availability of a wide range of tools
+these days to do &lt;em&gt;almost anything&lt;/em&gt;, has slowly reduced the need to
+learn, a very valid observation.&lt;/p&gt;
+
+&lt;p&gt;While the usefulness of tools is great, it might fail miserably when
+you want things certain way, and the tool may not be designed for
+that. A real life example would be this: in college, ever since the
+second year, I was using a software called, LyX for creating
+reports. LyX allows you to create LaTeX documents without the need to
+actually know TeX, so I never felt the necessity to learn LaTeX, for
+real. While LyX is a great tool for creating documents, if an error
+crept in documents somehow, or if you want to create a report with a
+custom template, then it fails miserably. (Also at the time I was in
+college, LyX had no support for extended unicode, using XeTeX and the
+like etc.) So towards the end I had to learn TeX the hard way, when I
+was pressed for time. A recent conversation took place on #emacs in
+irc&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:f6ecf5148c4e37e58f4f14fcdc127e45:irc&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:f6ecf5148c4e37e58f4f14fcdc127e45:irc&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;, where someone asked about the right tools for LaTeX, and
+possibilities of LyX etc., for which a reply came as while there are a
+number of tools which may generate LaTeX files for you without having
+to learn it, errors it generate might set your hair on fire (and this
+mostly by experience, takes place on the previous night of the
+deadline, when you see cryptic latex errors that have no end)&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:f6ecf5148c4e37e58f4f14fcdc127e45:emacs&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:f6ecf5148c4e37e58f4f14fcdc127e45:emacs&#34;&gt;2&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;Another thing that is in tandem with the declining reading habit in
+this era is the works of literature being converted to movies. While
+movies of literary works may certainly be the easy way out, it may not
+always do justice to the author’s creative genius in every case. (Of
+the top 20 IMDB movies, 11 are based on literary works) Reading the 7
+Harry Potter books will help in realising why a muggle like
+J.K.Rowling is a billionaire. While movies tell a great story, the
+reading experience is unparalleled.&lt;/p&gt;
+
+&lt;p&gt;Moving on, one of the reasons for the metamorphosis of a learner to
+being a silent observer, is the fact that, you&amp;rsquo;re in a comfort zone
+when there is a lazy tool to do things for you, and hence there is no
+real need to try to do things differently. And mostly the learning
+process gets initiated only when you &lt;em&gt;want&lt;/em&gt; things to work in a
+certain way. For me, this blog was an experiment to learn a &lt;em&gt;little&lt;/em&gt;
+webdesign, while I was comfortable with blogger all along, the fact
+is, you can blog a lifetime in blogger and still need not know what
+HTML or css looks like. My requirement was to make a decent site that
+looks ok in mobile as well (a responsive web design experiment, as
+some would call it), while the output may not be what you can compare
+with a web developer&amp;rsquo;s design, at least I learnt the process of
+writing a half decent responsive media queries in css. There may be
+many talented people who can generate a better looking website in less
+than a tenth of the time I used to create mine, but that certainly
+doesn&amp;rsquo;t take away the knowledge aquired in trying to do it, and I
+believe that is important.  As said in article at
+&lt;a href=&#34;http://simpleprogrammer.com/2012/09/23/learning-to-learn/&#34;&gt;Simple Programmer&lt;/a&gt;, the true goal of &lt;em&gt;learning&lt;/em&gt;, which is the
+ability to put knowledge into action. An english philospher’s famous
+words were this:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;“The great aim of education is not knowledge but action”
+&lt;small&gt;Herbert Spencer&lt;/small&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Ultimately it is picking up something you end up loving and learning
+about it. Trying to do things in a different way can definitely open
+new channels.  To conclude, I will quote something from
+&lt;a href=&#34;http://en.wikipedia.org/wiki/Tom_Peters&#34;&gt;Tom Peters&lt;/a&gt;, a quote often misattributed to Leanardo Da Vinci, on innovation and success:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;“Life is pretty simple: You do some stuff. Most fails. Some works. You
+do more of what works. If it works big, others quickly copy it. Then
+you do something else. The trick is the doing something else.”&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;P.S if you haven’t clicked the link to the article
+&lt;a href=&#34;http://simpleprogrammer.com/2012/09/23/learning-to-learn/&#34;&gt;Learning to learn&lt;/a&gt; at Simple Programmer, do it now, certainly
+worth a read.&lt;/p&gt;
+
+&lt;h3 id=&#34;foot-notes:f6ecf5148c4e37e58f4f14fcdc127e45&#34;&gt;Foot Notes&lt;/h3&gt;
+
+&lt;p&gt;was taking place in #emacs, well, it all started with TeXmacs
++ emacs, though ultimately I guess the guy settled with TeXmaker. The
+former has a (dis)advantage of a steeper learning curve (and might be
+an overkill if your only aim is to generate tex files, though proviedes an unobtrusive learning environment nonetheless)&lt;/p&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+
+&lt;hr /&gt;
+
+&lt;ol&gt;
+&lt;li id=&#34;fn:f6ecf5148c4e37e58f4f14fcdc127e45:irc&#34;&gt;If you, like me, were wondering about how a TeX conversation
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:f6ecf5148c4e37e58f4f14fcdc127e45:irc&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&#34;fn:f6ecf5148c4e37e58f4f14fcdc127e45:emacs&#34;&gt;Also, the channel being emacs, the advice was to use AucTeX
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:f6ecf5148c4e37e58f4f14fcdc127e45:emacs&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Static site generators &amp; Everything else</title>
+      <link>http://localhost:1313/Tech/myblog/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>http://localhost:1313/Tech/myblog/</guid>
+      <description>
+
+&lt;p&gt;This post lists the details of my blog, which is powered by gh-pages
+and pelican. In short another guy puts up his blog at GitHub and blogs
+about it. It initially started as a Lorem Ipsum content while I was
+testing out my rough and edgy pelican theme. You have been warned!&lt;/p&gt;
+
+&lt;p&gt;Welcome to the new avatar of my blog which is powered by &lt;a href=&#34;http://docs.getpelican.com/en/3.0/&#34; title=&#34;pelican&#34;&gt;pelican&lt;/a&gt;,
+just another static site generator. For the uninitiated, static sites
+are just a bunch of html pages, reminiscent of those old times where
+people used some ftp program to put some html pages in some server
+space. Remember the saying, “the more things change, the more they
+remain the same.” It is a full circle from plain html -&amp;gt; dynamic
+content based websites -&amp;gt; Back to plain html again. Well static site
+generators do just that, convert your favorite markup format into
+something a webserver can serve.&lt;/p&gt;
+
+&lt;p&gt;Also static site generators are dime a dozen, these days, you will
+always get one matching the language of your choice and markup of your
+choice as well. (Psst. if you are interested, I have tried making a
+sentence with a few If you are the type who hates wordplay, skip right
+ahead, there is nothing here… &lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:0577056210bedfefeae748c0d5cac415:wordplay&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:0577056210bedfefeae748c0d5cac415:wordplay&#34;&gt;1&lt;/a&gt;&lt;/sup&gt;).&lt;/p&gt;
+
+&lt;p&gt;At the moment Jekyll &lt;em&gt;arguably&lt;/em&gt; leads the pack&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:0577056210bedfefeae748c0d5cac415:lists&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:0577056210bedfefeae748c0d5cac415:lists&#34;&gt;2&lt;/a&gt;&lt;/sup&gt;,
+with close to ~8.2K watchers in Github, while that metric doesn’t
+actually tell the number of sites actually built using Jekyll. FYI,
+almost any post on jekyll trends in Hacker News, and even the US
+election campaign has used Jekyll for blogging. A more
+interesting information would be just googling Jekyll, about &lt;sup&gt;4&lt;/sup&gt;&amp;frasl;&lt;sub&gt;10&lt;/sub&gt;
+links in the first page go to &lt;em&gt;Jekyll&lt;/em&gt; the static site generator, the
+rest mostly links to Jekyll the TV show, and none link to &lt;em&gt;Jekyll and
+Hyde&lt;/em&gt;, the novella (condolences to R L Stevenson). This is similar to
+googling “Big Bang Theory”, TV has a higher preference than cosmology,
+of course.&lt;sup class=&#34;footnote-ref&#34; id=&#34;fnref:0577056210bedfefeae748c0d5cac415:Googling-the-Big-Bang-theory-will-have-actually-no-first-page-results-on-cosmology-at-all&#34;&gt;&lt;a rel=&#34;footnote&#34; href=&#34;#fn:0577056210bedfefeae748c0d5cac415:Googling-the-Big-Bang-theory-will-have-actually-no-first-page-results-on-cosmology-at-all&#34;&gt;0&lt;/a&gt;&lt;/sup&gt;&lt;/p&gt;
+
+&lt;p&gt;Now talking that much on jekyll, this site isn&amp;rsquo;t generated via Jekyll,
+it is generated by Pelican, a static generator written in python. And
+this was the primary reason, just that in case things need to work in
+a certain way, it could be done without setting my hair on fire.
+Though knowledge of python isn&amp;rsquo;t an absolute necessity if your
+intention is just to create a site in pelican, but recommended. Like
+other well known static site generators, pelican also features these
+(last point is a bit debatable):&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Good Documentation&lt;/li&gt;
+&lt;li&gt;Easy templating system&lt;/li&gt;
+&lt;li&gt;Good community support&lt;/li&gt;
+&lt;li&gt;Written in python&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Posts are written in markdown, in emacs. A simple git repository with
+post commit hooks that runs pelican on each commit, does the trick of
+generating the html pages. The config file is a simple python file
+which takes care of all the site related details, links etc.&lt;/p&gt;
+
+&lt;p&gt;Pelican comes with a default set of themes, and a few others available
+at the &lt;a href=&#34;https://github.com/getpelican/pelican-themes&#34;&gt;pelican-themes&lt;/a&gt; repo, which can help in setting up a blog
+running without much hassle. Building a theme is also pretty easy, and
+it uses Jinja templating in the backend, this blog look right now is a
+customised theme built upon the existing tuxlite-tbs theme, I will
+write on that another time. (This post is already long enough as it
+is)&lt;/p&gt;
+
+&lt;p&gt;For the typographically conscious, there is support from the excellent
+emacs &lt;a href=&#34;https://github.com/jorgenschaefer/typoel&#34; title=&#34;Typographical Punctuation marks&#34;&gt;typo&lt;/a&gt; mode which takes care of your punctuation marks, if
+you are the type who cares about the &lt;a href=&#34;http://www.smashingmagazine.com/2011/08/15/mind-your-en-and-em-dashes-typographic-etiquette/&#34; title=&#34;Mind your em and en dashes&#34;&gt;em &amp;amp; en–dashes&lt;/a&gt;. (Yes, we
+have a mode for everything… including a &lt;a href=&#34;http://en.wikipedia.org/wiki/ELIZA&#34; title=&#34;Eliza, the quintessential psychotherapist&#34;&gt;psychotherapist&lt;/a&gt;, who can
+kill time, if not depression) That is pretty much it, as far as
+generating a site in pelican is concerned, simple.&lt;/p&gt;
+
+&lt;h3 id=&#34;foot-notes:0577056210bedfefeae748c0d5cac415&#34;&gt;Foot Notes&lt;/h3&gt;
+
+&lt;p&gt;popularity, its precedence in search results…
+possibilities out there, generating a static site is as easy as baking
+a &lt;a href=&#34;https://bolt80.com/piecrust&#34; title=&#34;PieCrust&#34;&gt;piecrust&lt;/a&gt;. You just have to &lt;a href=&#34;https://github.com/schrockwell/chisel&#34; title=&#34;Chisel&#34;&gt;chisel&lt;/a&gt; your heart&amp;rsquo;s content in
+the markup format of your choice and hire a &lt;a href=&#34;http://middlemanapp.com&#34; title=&#34;Middle Man&#34;&gt;middleman&lt;/a&gt; to solve
+the strange case of Dr.&lt;a href=&#34;http://jekyllrb.com&#34; title=&#34;jekyll&#34;&gt;Jekyll&lt;/a&gt; and Mr.&lt;a href=&#34;http://ringce.com/hyde&#34; title=&#34;hyde, Jekyll’s evil alter-ego in python &#34;&gt;Hyde&lt;/a&gt;, whose obsession
+with &lt;a href=&#34;http://octopress.org&#34; title=&#34;Octopress, pressing content for hackers&#34;&gt;Octopress&lt;/a&gt;, is &lt;a href=&#34;https://github.com/blahed/frank&#34; title=&#34;Frank&#34;&gt;frank&lt;/a&gt;ly &lt;a href=&#34;https://github.com/caolan/petrify&#34; title=&#34;Petrify&#34;&gt;petrify&lt;/a&gt;ing. (This is far
+from the list of possibilities, but it is difficult, though, to make a
+valid English sentence with all the static site generators out
+there. A relatively comprehensive list is at &lt;a href=&#34;http://nanoc.stoneship.org&#34; title=&#34;nanoc&#34;&gt;nanoc&lt;/a&gt; which, FYI, is
+also another static site generator.  Choose your poison)&lt;/p&gt;
+&lt;div class=&#34;footnotes&#34;&gt;
+
+&lt;hr /&gt;
+
+&lt;ol&gt;
+&lt;li id=&#34;fn:0577056210bedfefeae748c0d5cac415:wordplay&#34;&gt;These days, one is &lt;a href=&#34;http://awestruct.org&#34; title=&#34;Awestruct&#34;&gt;awestruc&lt;/a&gt; with the number of
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:0577056210bedfefeae748c0d5cac415:wordplay&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li id=&#34;fn:0577056210bedfefeae748c0d5cac415:lists&#34;&gt;For more info on this read,a &lt;a href=&#34;https://gist.github.com/4181764&#34; title=&#34;Another list, on static site generators&#34;&gt;crowdsourced list&lt;/a&gt; and a &lt;a href=&#34;http://news.ycombinator.com/item?id=4857473&#34; title=&#34;Poll your preference&#34;&gt;HN poll&lt;/a&gt; for static generators
+ &lt;a class=&#34;footnote-return&#34; href=&#34;#fnref:0577056210bedfefeae748c0d5cac415:lists&#34;&gt;&lt;sup&gt;[return]&lt;/sup&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

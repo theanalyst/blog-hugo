@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Abouts on My New Hugo Site</title>
+    <link>http://localhost:1313/about/</link>
+    <description>Recent content in Abouts on My New Hugo Site</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 08 Jun 2012 18:30:21 +0530</lastBuildDate>
+    <atom:link href="http://localhost:1313/about/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>About</title>
+      <link>http://localhost:1313/about/about/</link>
+      <pubDate>Fri, 08 Jun 2012 18:30:21 +0530</pubDate>
+      
+      <guid>http://localhost:1313/about/about/</guid>
+      <description>&lt;p&gt;First release in &amp;lsquo;89, infinitely beta thereafter, geek, foss
+enthusiast, enjoying life at the moment&lt;/p&gt;
+
+&lt;p&gt;Hello there, I&amp;rsquo;m Abhishek, an electrical engineer from National
+Institute of Technology, Calicut. This little space is mostly, about
+&lt;em&gt;nothing&lt;/em&gt; in particular (watch for changes in this part as the blog
+evolves). When Jerry Seinfeld created Seinfeld it was a show about
+well, nothing, but just small amusing things that happen in everyday
+life. While I&amp;rsquo;m no raconteur to narrate everyday things in an
+interesting way, I&amp;rsquo;ll try my best. I love XKCD, music and reading
+among other things. Though reading is something I&amp;rsquo;m trying to catch up
+at present.&lt;/p&gt;
+
+&lt;p&gt;A great man once said:&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;&amp;ldquo;&lt;em&gt;Laziness, Impatience and Hubris&lt;/em&gt;, the three great virtues of a
+programmer&amp;rdquo;
+&lt;small&gt; Larry Wall-The Author of Perl Programming Language  &lt;/small&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;So while you are reading the blog of the greatest programmer, I should
+tell that brickbats, comments and suggestions are most welcome.&lt;/p&gt;
+
+&lt;p&gt;P.S &lt;em&gt;theanalyst&lt;/em&gt; is an anagram for &amp;lsquo;A shy talent&amp;rsquo; back when I started
+blogging I felt it was oddly appropriate&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
