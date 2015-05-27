@@ -2,6 +2,7 @@
 title = "Consul: Getting started with service discovery"
 date = "2015-02-14"
 tags = ["consul", "docker", "registrator"]
+draft = true
 +++
 
 [Consul][1] is a great tool for service discovery. It is distributed

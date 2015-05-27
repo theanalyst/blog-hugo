@@ -26,26 +26,28 @@ data.
 To start with reading csv is a simple call to pandas' `read_csv`
 function. This can be done with only the interesting fields. 
 
-    :::hylang
-	(import pandas
+{{<highlight hylang>}}
+(import pandas
         [numpy :as np]
         [matplotlib.pyplot :as plt]
         [seaborn :as sns])
 
-    (defn parse-goodreads-csv [filepath]
-	  (let [[required-fields ["Title" "Date Read" "Bookshelves"
-                              "Number of Pages" "Original Publication Year"]]
+(defn parse-goodreads-csv [filepath]
+  (let [[required-fields ["Title" "Date Read" "Bookshelves"
+                          "Number of Pages" "Original Publication Year"]]
         (pandas.read_csv filepath :usecols required-fields
 			             :index-col "Date Read" :parse-dates true)))
 
+{{< /highlight >}}
 
 Now taking out only the column's we're interested in & filtering out
 the data from only a particular year can be done by
 
-	:::hylang
-    (defn books-in-year [dataframe year]
-	  (let [[day1 (fn [y] (+ (str y) "-01-01"))]]
-        (slice (. dataframe ix) (day1 year) (day1 (inc year)))))
+{{<highlight hylang>}}
+(defn books-in-year [dataframe year]
+  (let [[day1 (fn [y] (+ (str y) "-01-01"))]]
+    (slice (. dataframe ix) (day1 year) (day1 (inc year)))))
+{{</highlight>}}
 
 `ix` returns the index of dataframe, since we'll be indexing by date
 read, this allows us to select the required range, by simply selecting
@@ -57,12 +59,13 @@ basis. Pandas offers a [`groupby`][3] & `aggregate` much similiar to
 SQL like queries. So all we have to do is to group pages by month
 here.
 
-    :::hylang
-	(defn aggregate-by-month [dataframe params]
-	  "Group a particular key by month"
-      (-> (.groupby dataframe (. dataframe index month))
-	      (.aggregate params)))
-
+{{<highlight hylang>}}
+(defn aggregate-by-month [dataframe params]
+  "Group a particular key by month"
+  (-> (.groupby dataframe (. dataframe index month))
+      (.aggregate params)))
+{{</highlight>}}
+		  
 The above function assumes that the dataframe object is already
 indexed by a timeframe data, (Date Read in our case), then a simple
 groupby month is performed and supplied to `aggregate` which does a
@@ -71,21 +74,21 @@ functions. The threading operator `->` makes the result of the first
 call as the first argument of the function. Now we have enough to get
 some stats for the year.
 
-    :::hylang
-	(defn process [filepath]
-	  (let [[books-in-2014
-              (-> (parse-goodreads-csv filepath)
-                  (books-in-year 2014))]
-            [pages-per-month (-> (. books-in-2014 [["Number of Pages"]])
-                             (aggregate-by-month ["sum" "count" np.mean]))]]
-      (print "Pages read in 2014 "
-             ((. books-in-2014 ["Number of Pages"] sum)))
-      (print "Pages read in kindle"
-             ((. books-in-2014 [(= books-in-2014.Bookshelves "kindle")]
-                 ["Number of Pages"] sum)))
-      (print "Monthly Stats")
-      (print pages-per-month)
-
+{{<highlight hylang>}}
+(defn process [filepath]
+  (let [[books-in-2014
+          (-> (parse-goodreads-csv filepath)
+              (books-in-year 2014))]
+        [pages-per-month (-> (. books-in-2014 [["Number of Pages"]])
+                         (aggregate-by-month ["sum" "count" np.mean]))]]
+  (print "Pages read in 2014 "
+         ((. books-in-2014 ["Number of Pages"] sum)))
+  (print "Pages read in kindle"
+         ((. books-in-2014 [(= books-in-2014.Bookshelves "kindle")]
+             ["Number of Pages"] sum)))
+  (print "Monthly Stats")
+  (print pages-per-month)
+{{</highlight>}}
 
 First, the `parse-csv` function is given only the interesting columns,
 also indexing is done via date read, we get `pages-per-month` via the
@@ -94,7 +97,7 @@ Kindle was done by summing columns containing the Book shelves
 (alternatively if you had marked the editions correctly another field
 suggest the Kindle edition..).
 
-    :::txt
+
 	Pages read in 2014  6659.0
 	Pages read in kindle 4489.0
 	Monthly Stats

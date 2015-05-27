@@ -1,10 +1,11 @@
-baseurl = "http://theanalyst.github.io/"
+baseurl = "http://abhishekl.in/"
 languageCode = "en-us"
 title = "Often Bearing Metaphoric Tense"
 DisqusShortname = "hyperbolicmonologues"
 paginate = 5
 Copyright = "All rights reserved 2012-15"
-
+canonifyurls = true
+pygmentsstyle = "emacs"
 [params]
 description="code,coffee & stuff"
 githubName = "theanalyst"
@@ -15,4 +16,10 @@ cover="images/code.png"
 name = "Blog"
 weight = -120
 identifier = "blog"
-url = "/"
+url = "http://abhishekl.in"
+
+[[menu.main]]
+name = "Git"
+weight = -110
+identifier = "github"
+url = "https://github.com/theanalyst"

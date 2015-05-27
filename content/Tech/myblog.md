@@ -1,6 +1,6 @@
 +++
 title = "Static site generators & Everything else"
-date= "2012-12-03 14=23"
+date= "2012-12-03T14:23:00"
 tags= ["Python", "Emacs"]
 +++
 
