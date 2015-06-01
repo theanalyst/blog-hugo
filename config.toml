@@ -19,7 +19,7 @@ identifier = "blog"
 url = "http://abhishekl.in"
 
 [[menu.main]]
-name = "Git"
+name = "Github"
 weight = -110
 identifier = "github"
 url = "https://github.com/theanalyst"
