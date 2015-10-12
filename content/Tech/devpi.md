@@ -3,7 +3,7 @@ comments = true
 date = "2015-07-28T00:03:28+05:30"
 draft = false
 image = ""
-slug = "post-title"
+slug = "devpi-docker"
 tags = ["python", "docker", "pip", "devpi"]
 title = "Caching pip packages using devpi & docker"
 +++
@@ -13,7 +13,7 @@ drastically speed up the time to setup your environment, (which mostly
 involves download of pip packages, which tend to be network intensive
 & time consuming) by caching pip packages. Similar to other caching
 proxies like apt, python has its own caching proxy in the form of
-[devpi](http://doc.devpi.net/latest/)[^1], which allows you to run a
+[devpi](http://doc.devpi.net/latest/), which allows you to run a
 pypi mirror in your laptop. (devpi is much more than just a pip
 mirror, for more on its capabilities read the link)
 
